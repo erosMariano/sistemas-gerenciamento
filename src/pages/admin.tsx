@@ -6,6 +6,8 @@ import { Poppins } from "next/font/google";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import styled from "styled-components";
 const poppins = Poppins({
@@ -14,7 +16,28 @@ const poppins = Poppins({
 });
 
 function Admin() {
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("@adminEros");
+
+    if (typeof window !== "undefined" && token !== "valido") {
+      router.push("/login");
+    } else {
+      setAuthChecked(true);
+    }
+  }, [router]);
+
   const [authChecked, setAuthChecked] = useState(false);
+  const [createdEvent, setCreatedEvent] = useState<EventsModel>({
+    id: 0,
+    admin_evento: "",
+    banner: "",
+    data: "",
+    local: "",
+    nome_evento: "",
+    quantidade_inscritos: 0,
+    valor: 0,
+  });
   const [events, setEvents] = useState<EventsModel[]>([
     {
       id: 0,
@@ -27,6 +50,16 @@ function Admin() {
       valor: 0,
     },
   ]);
+
+  const [newEvent, setNewEvent] = useState<EventsModel>({
+    admin_evento: "",
+    banner: "",
+    data: "",
+    local: "",
+    nome_evento: "",
+    quantidade_inscritos: 0,
+    valor: "",
+  });
 
   useEffect(() => {
     async function getEvents() {
@@ -47,18 +80,77 @@ function Admin() {
     }
     getEvents();
   }, []);
-  const router = useRouter();
+
+  async function createEvent(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const postData = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify(newEvent),
+    };
+
+    //====== CRIAR VALIDAÇÕES
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/events`,
+      postData
+    );
+
+    const dataResult = await res.json();
+    if (dataResult.message !== "success") return;
+    setCreatedEvent(dataResult);
+    toast("Evento criado!", {
+      theme: "light",
+      autoClose: 3000,
+    });
+
+    clearInputs();
+  }
+
+  function clearInputs() {
+    setNewEvent({
+      admin_evento: "",
+      banner: "",
+      data: "00-00-00",
+      local: "",
+      nome_evento: "",
+      valor: "",
+      quantidade_inscritos: 0,
+    });
+  }
+
+  const [deleteItem, setDeleteItem] = useState(false);
+
+  async function deleteEvent(id: number) {
+    setDeleteItem(true);
+    const postData = {
+      method: "DElETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id }),
+    };
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/events/`,
+      postData
+    );
+    const data = await res.json();
+    if (data.response.message !== "success") return;
+    toast("Evento deletado!", {
+      theme: "light",
+      autoClose: 3000,
+    });
+
+    setDeleteItem(false);
+  }
 
   useEffect(() => {
-    const token = localStorage.getItem("@adminEros");
-
-    if (typeof window !== "undefined" && token !== "valido") {
-      router.push("/login");
-    } else {
-      setAuthChecked(true);
-    }
-  }, [router]);
-
+    console.log(deleteItem);
+  }, [deleteItem]);
   if (!authChecked) {
     return null;
   } else {
@@ -75,14 +167,59 @@ function Admin() {
         </Head>
 
         <Header admin={true} />
+        <ToastContainer />
         <Main className={poppins.className}>
-          <form>
+          <form onSubmit={(e) => createEvent(e)}>
             <h1>Cadastrar evento</h1>
-            <input type="text" placeholder="Digite o nome do evento" />
-            <input type="date" placeholder="Data do evento: 00/00/00" />
-            <input type="text" placeholder="Digite o local" />
-            <input type="text" placeholder="Digite o responsável" />
-            <input type="text" placeholder="Digite o valor do ingresso" />
+            <input
+              type="text"
+              placeholder="Digite o nome do evento"
+              value={newEvent.nome_evento}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, nome_evento: e.target.value })
+              }
+            />
+            <input
+              type="date"
+              placeholder="Data do evento: 00/00/00"
+              value={newEvent.data}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, data: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Digite o local"
+              value={newEvent.local}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, local: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Digite o responsável"
+              value={newEvent.admin_evento}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, admin_evento: e.target.value })
+              }
+            />
+            <input
+              type="number"
+              placeholder="Digite o valor do ingresso"
+              value={newEvent.valor}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, valor: Number(e.target.value) })
+              }
+            />
+
+            <input
+              type="text"
+              placeholder="URL do banner da festa"
+              value={newEvent.banner}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, banner: e.target.value })
+              }
+            />
             <button>Entrar</button>
           </form>
         </Main>
@@ -100,6 +237,7 @@ function Admin() {
                 <th>Local</th>
                 <th>Adm do Evento</th>
                 <th>Valor</th>
+                <th>Deletar</th>
               </tr>
             </thead>
             <tbody>
@@ -117,6 +255,14 @@ function Admin() {
                       <td>{event.local}</td>
                       <td>{event.admin_evento}</td>
                       <td>R$ {event.valor}</td>
+                      <td>
+                        <button
+                          disabled={deleteItem}
+                          onClick={() => deleteEvent(Number(event.id))}
+                        >
+                          Deletar
+                        </button>
+                      </td>
                     </tr>
                   </React.Fragment>
                 );
@@ -222,6 +368,21 @@ export const Table = styled.table`
     border: 1px solid #ddd;
   }
 
+  td button {
+    border: none;
+    width: 100%;
+    background-color: #ee0808;
+    color: #fff;
+    font-weight: 700;
+    padding: 4px 0;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
   tr {
     background-color: #f2f2f2;
   }

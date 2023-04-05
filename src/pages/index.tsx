@@ -60,29 +60,6 @@ export default function Home() {
     getEvents();
   }, []);
 
-  async function createEvent(data: EventsModel) {
-    const postData = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(data),
-    };
-
-    // ====== CRIAR VALIDAÇÕES
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/events`,
-      postData
-    );
-
-    const dataResult = await res.json();
-    if (dataResult.response.message !== "success") return;
-    setCreatedEvent(dataResult);
-  }
-
-
-
   async function updateEvent(eventModify: EventsModel) {
     const postData = {
       method: "PUT",

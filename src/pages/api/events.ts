@@ -19,14 +19,12 @@ export default async function handler(
   }
   if(req.method === "GET" && req.query.id){
     const { id } = req.query;
-    console.log("entreei aqui")
 
     eventos = await query({
       query: "SELECT * FROM eventos WHERE id = ?",
       values: [id],
     });
 
-    console.log(eventos)
     res.status(200).json(eventos);
   }
 
@@ -54,6 +52,8 @@ export default async function handler(
         valor,
       ],
     });
+
+
     let product = {
       banner,
       nome_evento,

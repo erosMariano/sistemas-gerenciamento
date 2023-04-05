@@ -6,5 +6,5 @@ export interface EventsModel {
   local: string;
   admin_evento: string;
   quantidade_inscritos: number;
-  valor: number;
+  valor: number | string;
 }
