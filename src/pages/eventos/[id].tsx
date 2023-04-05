@@ -1,21 +1,63 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { EventsModel } from "@/types/models";
 import { Poppins } from "next/font/google";
 import Head from "next/head";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import ImageBanner from "../assets/images/bannerHome.jpg";
+import ImageBanner from "../../assets/images/bannerHome.jpg";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
 });
 
 function Evento() {
+  const [event, setEvent] = useState<EventsModel[]>([{
+    id: 0,
+    admin_evento: "",
+    banner: "",
+    data: "",
+    local: "",
+    nome_evento: "",
+    quantidade_inscritos: 0,
+    valor: 0,
+  }]);
+  const router = useRouter();
+  const { id } = router.query;
+
+  useEffect(() => {
+    async function getEvent() {
+      const postData = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/events/?${id}`,
+        postData
+      );
+
+      const data = await res.json();
+      setEvent(data);
+    }
+    getEvent();
+  }, [id]);
+
+
+  const dataFormat = new Date(event[0].data);
+
+  const dia = dataFormat.getDate();
+  const mes = String(dataFormat.getMonth() + 1).padStart(2, "0");
+  const ano = dataFormat.getFullYear();
+
   return (
     <>
       <Head>
-        <title>erosEvents - Evento</title>
+        <title>erosEvents - {event[0].nome_evento ? event[0].nome_evento : ""}</title>
         <meta
           name="description"
           content="Simplifique o gerenciamento de seus eventos com nosso aplicativo. Com recursos como programação, inscrições, pagamentos e comunicação, você pode criar eventos de sucesso com facilidade. Experimente agora e faça seu evento decolar!"
@@ -28,19 +70,28 @@ function Evento() {
         <Header />
         <Container className="container">
           <div className="containerImage">
-            <Image src={ImageBanner} fill alt="" />
+            <Image
+              src={event[0].banner.length ? event[0].banner : ImageBanner}
+              fill
+              alt=""
+            />
           </div>
           <Reserve>
             <div className="sideLeft">
-              <h2>Data: 06/07/2023</h2>
-              <h1>Vintage Culture</h1>
-              <p>Local: Teatro Municipal Glória Giglio</p>
+              <h1>{event[0].nome_evento ? event[0].nome_evento : ""}</h1>
+              <h2>Data: {event[0].data ? `${dia}/${mes}/${ano}` : ""}</h2>
+              <h2>{event[0].admin_evento ? event[0].admin_evento : ""}</h2>
+              <p>Local: {event[0].local ? event[0].local : ""}</p>
             </div>
 
             <form action="#">
               <h3>Reserve aqui</h3>
               <input type="text" name="name" placeholder="Digite seu nome" />
-              <input type="number" name="number" placeholder="Digite seu e-mail"/>
+              <input
+                type="number"
+                name="number"
+                placeholder="Digite seu e-mail"
+              />
               <button>Reservar</button>
             </form>
           </Reserve>
@@ -91,12 +142,13 @@ export const Reserve = styled.div`
     flex-direction: column;
     width: 300px;
     gap: 8px;
-    input, button{
+    input,
+    button {
       height: 32px;
       border: none;
       border-radius: 4px;
     }
-    input{
+    input {
       padding-left: 16px;
     }
     h3 {
@@ -104,14 +156,14 @@ export const Reserve = styled.div`
       text-align: center;
     }
 
-    button{
-      background-color: #FB4B89;
+    button {
+      background-color: #fb4b89;
       color: #fff;
       font-weight: 700;
       cursor: pointer;
-      transition: all .3s;
-      &:hover{
-        filter: brightness(.9);
+      transition: all 0.3s;
+      &:hover {
+        filter: brightness(0.9);
       }
     }
   }

@@ -1,18 +1,31 @@
+import { EventsModel } from "@/types/models";
 import React from "react";
 import styled from "styled-components";
 import CardEvents from "./CardEvents";
 
-function Eventos() {
+interface EventosProps {
+  listEvents: EventsModel[];
+}
+function Eventos({ listEvents }: EventosProps) {
   return (
     <EventosContainer className="container">
       <h2>Nossos eventos</h2>
 
       <div className="containerEvents" id="eventos">
-        <CardEvents />
-        <CardEvents />
-        <CardEvents />
-        <CardEvents />
-        <CardEvents />
+        {listEvents &&
+          listEvents.map((evento) => (
+            <CardEvents
+              admin_evento={evento.admin_evento}
+              banner={evento.banner}
+              data={evento.data}
+              local={evento.local}
+              nome_evento={evento.nome_evento}
+              quantidade_inscritos={evento.quantidade_inscritos}
+              valor={evento.valor}
+              id={evento.id}
+              key={evento.id}
+            />
+          ))}
       </div>
     </EventosContainer>
   );
@@ -21,7 +34,7 @@ function Eventos() {
 export default Eventos;
 
 export const EventosContainer = styled.section`
-  &.container{
+  &.container {
     padding-top: 80px;
   }
   .containerEvents {

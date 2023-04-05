@@ -8,7 +8,9 @@ function Header() {
   return (
     <HeaderContainer>
       <div className="container">
-        <Image src={Logo} width={200} height={50} alt="Logo ErosEvent" />
+        <Link href="/"> 
+          <Image src={Logo} width={200} height={50} alt="Logo ErosEvent" />
+        </Link>
 
         <nav>
           <ul>
@@ -17,7 +19,7 @@ function Header() {
             </li>
 
             <li>
-              <Link href="/perfil" className="login">
+              <Link href="" className="login">
                 Login
               </Link>
             </li>
@@ -31,7 +33,7 @@ function Header() {
 export default Header;
 
 export const HeaderContainer = styled.header`
-  display: flex;  
+  display: flex;
   padding-top: 40px;
 
   .container,
@@ -50,7 +52,7 @@ export const HeaderContainer = styled.header`
     text-decoration: none;
   }
 
-  .login{
+  .login {
     border: 1px solid #fff;
     border-radius: 100px;
     padding: 4px 24px;

@@ -4,19 +4,36 @@ import styled from "styled-components";
 import Pessoas from "../../../../assets/images/pessoas.svg";
 import Banner from "../../../../assets/images/bannerHome.jpg";
 import Link from "next/link";
-function CardEvents() {
+import { EventsModel } from "@/types/models";
+
+function CardEvents({
+  banner,
+  admin_evento,
+  data,
+  local,
+  nome_evento,
+  quantidade_inscritos,
+  valor,
+  id
+}: EventsModel) {
+  const dataFormat = new Date(data);
+
+  const dia = dataFormat.getDate();
+  const mes = String(dataFormat.getMonth() + 1).padStart(2, "0");
+  const ano = dataFormat.getFullYear();
   return (
     <Card>
-      <Link href="/evento">
+      <Link href={`/eventos/${id}`}>
         <>
-          <Image src={Banner} width={361} height={200} alt="" />
+          <Image src={banner} width={361} height={200} alt="" />
           <div className="text">
-            <h3>Vintage Culture</h3>
-            <span className="dia">Data: 06/07/2023</span>
-            <span className="datails">Teatro Municipal Glória Giglio</span>
-            <span className="datails">Valor: Free</span>
-            <span className="datailsCommunity">ErosEvents</span>
+            <h3>{nome_evento}</h3>
+            <span className="dia">Data: {`${dia}/${mes}/${ano}`}</span>
+            <span className="datails">{local}</span>
+            <span className="datails">Valor: R${valor}</span>
+            <span className="datailsCommunity">{admin_evento}</span>
             <span className="datailsCommunity">
+              {quantidade_inscritos}
               <Image src={Pessoas} width={15} height={15} alt="" /> inscritos
             </span>
           </div>
@@ -33,7 +50,7 @@ export const Card = styled.div`
   width: 361px;
   border-radius: 9px;
 
-  a{
+  a {
     text-decoration: none;
     color: inherit;
   }
