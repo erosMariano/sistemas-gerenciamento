@@ -9,6 +9,10 @@ export const GlobalStyle = createGlobalStyle`
   body{
     background-color: #231155;
   }
+  html{
+    scroll-padding-top: 100px;
+    scroll-behavior: smooth;
+  }
 
   .container{
     max-width: 1232px;

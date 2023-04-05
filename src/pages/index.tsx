@@ -1,9 +1,9 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Poppins } from "next/font/google";
 import Header from "@/components/Header";
 import Hero from "@/components/Home/Hero";
 import Eventos from "@/components/Home/Eventos";
+import Footer from "@/components/Footer";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,6 +26,7 @@ export default function Home() {
         <Header />
         <Hero />
         <Eventos/>
+        <Footer/>
       </main>
     </>
   );

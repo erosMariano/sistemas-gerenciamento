@@ -13,7 +13,7 @@ function Header() {
         <nav>
           <ul>
             <li>
-              <Link href="/eventos">Eventos</Link>
+              <Link href="/#eventos">Eventos</Link>
             </li>
 
             <li>
