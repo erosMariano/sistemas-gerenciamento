@@ -1,29 +1,34 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { EventsModel } from "@/types/models";
+import { FormatDate } from "@/utils/formatDate";
 import { Poppins } from "next/font/google";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import "react-loading-skeleton/dist/skeleton.css";
 import styled from "styled-components";
-import ImageBanner from "../../assets/images/bannerHome.jpg";
+import Skeleton from "react-loading-skeleton";
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
 });
 
 function Evento() {
-  const [event, setEvent] = useState<EventsModel[]>([{
-    id: 0,
-    admin_evento: "",
-    banner: "",
-    data: "",
-    local: "",
-    nome_evento: "",
-    quantidade_inscritos: 0,
-    valor: 0,
-  }]);
+  const [event, setEvent] = useState<EventsModel[]>([
+    {
+      id: 0,
+      admin_evento: "",
+      banner: "",
+      data: "",
+      local: "",
+      nome_evento: "",
+      quantidade_inscritos: 0,
+      valor: 0,
+    },
+  ]);
   const router = useRouter();
   const { id } = router.query;
 
@@ -47,17 +52,14 @@ function Evento() {
     getEvent();
   }, [id]);
 
-
   const dataFormat = new Date(event[0].data);
-
-  const dia = dataFormat.getDate();
-  const mes = String(dataFormat.getMonth() + 1).padStart(2, "0");
-  const ano = dataFormat.getFullYear();
-
+  FormatDate(dataFormat);
   return (
     <>
       <Head>
-        <title>erosEvents - {event[0].nome_evento ? event[0].nome_evento : ""}</title>
+        <title>
+          erosEvents - {event[0].nome_evento ? event[0].nome_evento : ""}
+        </title>
         <meta
           name="description"
           content="Simplifique o gerenciamento de seus eventos com nosso aplicativo. Com recursos como programação, inscrições, pagamentos e comunicação, você pode criar eventos de sucesso com facilidade. Experimente agora e faça seu evento decolar!"
@@ -70,18 +72,30 @@ function Evento() {
         <Header />
         <Container className="container">
           <div className="containerImage">
-            <Image
-              src={event[0].banner.length ? event[0].banner : ImageBanner}
-              fill
-              alt=""
-            />
+            {event[0].banner.length ? (
+              <Image src={event[0].banner} fill alt="" />
+            ) : (
+              <Skeleton width={"100%"} height={500} borderRadius={16} />
+            )}
           </div>
           <Reserve>
             <div className="sideLeft">
-              <h1>{event[0].nome_evento ? event[0].nome_evento : ""}</h1>
-              <h2>Data: {event[0].data ? `${dia}/${mes}/${ano}` : ""}</h2>
-              <h2>{event[0].admin_evento ? event[0].admin_evento : ""}</h2>
-              <p>Local: {event[0].local ? event[0].local : ""}</p>
+              {event[0].nome_evento ? (
+                <>
+                  <h1>{event[0].nome_evento}</h1>
+                  <h2>Data: {FormatDate(dataFormat)}</h2>
+                  <h2>{event[0].admin_evento}</h2>
+                  <p>Local: {event[0].local}</p>
+                </>
+              ) : (
+                <>
+                  <Skeleton width={300} height={48} />
+                  <Skeleton width={200} height={24} />
+                  <Skeleton width={189} height={24} />
+                  <Skeleton width={210} height={24} />
+
+                </>
+              )}
             </div>
 
             <form action="#">

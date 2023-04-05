@@ -19,7 +19,7 @@ function Header() {
             </li>
 
             <li>
-              <Link href="" className="login">
+              <Link href="/login" className="login">
                 Login
               </Link>
             </li>

@@ -5,6 +5,7 @@ import Pessoas from "../../../../assets/images/pessoas.svg";
 import Banner from "../../../../assets/images/bannerHome.jpg";
 import Link from "next/link";
 import { EventsModel } from "@/types/models";
+import { FormatDate } from "@/utils/formatDate";
 
 function CardEvents({
   banner,
@@ -18,9 +19,6 @@ function CardEvents({
 }: EventsModel) {
   const dataFormat = new Date(data);
 
-  const dia = dataFormat.getDate();
-  const mes = String(dataFormat.getMonth() + 1).padStart(2, "0");
-  const ano = dataFormat.getFullYear();
   return (
     <Card>
       <Link href={`/eventos/${id}`}>
@@ -28,7 +26,7 @@ function CardEvents({
           <Image src={banner} width={361} height={200} alt="" />
           <div className="text">
             <h3>{nome_evento}</h3>
-            <span className="dia">Data: {`${dia}/${mes}/${ano}`}</span>
+            <span className="dia">Data: {FormatDate(dataFormat)}</span>
             <span className="datails">{local}</span>
             <span className="datails">Valor: R${valor}</span>
             <span className="datailsCommunity">{admin_evento}</span>
