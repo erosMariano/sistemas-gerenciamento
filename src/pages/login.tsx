@@ -2,14 +2,40 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Poppins } from "next/font/google";
 import Head from "next/head";
-import React from "react";
+import Router from "next/router";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
 });
 
+interface LoginUser {
+  name: string;
+  password: string;
+}
 function Login() {
+  const [loginUser, setLoginUser] = useState<LoginUser>({
+    name: "",
+    password: "",
+  });
+  function validateUser(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (loginUser.name === "admin" && loginUser.password === "admin") {
+      Router.push("/admin");
+      localStorage.setItem("@adminEros", "valido")
+    } else {
+      toast("Credenciais incorretas", {
+        theme: "dark",
+        autoClose: 3000
+      });
+    }
+  }
   return (
     <>
       <Head>
@@ -24,11 +50,27 @@ function Login() {
 
       <main className={poppins.className}>
         <Header />
+        <ToastContainer />
+
         <Main>
-          <form>
+          <form onSubmit={(e) => validateUser(e)}>
             <h1>Login</h1>
-            <input type="text" placeholder="Digite seu usuário" />
-            <input type="text" placeholder="Digite sua senha" />
+            <input
+              type="text"
+              placeholder="Digite seu usuário"
+              name="user"
+              onChange={(e) =>
+                setLoginUser({ ...loginUser, name: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Digite sua senha"
+              name="password"
+              onChange={(e) =>
+                setLoginUser({ ...loginUser, password: e.target.value })
+              }
+            />
 
             <button>Entrar</button>
           </form>

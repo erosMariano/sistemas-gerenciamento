@@ -4,11 +4,19 @@ import React from "react";
 import styled from "styled-components";
 import Logo from "../../../public/images/logo.svg";
 
-function Header() {
+interface HeaderProps {
+  admin?: boolean;
+}
+function Header({ admin }: HeaderProps) {
+  function clearLogin() {
+    if (admin) {
+      localStorage.removeItem("@adminEros");
+    }
+  }
   return (
     <HeaderContainer>
       <div className="container">
-        <Link href="/"> 
+        <Link href="/">
           <Image src={Logo} width={200} height={50} alt="Logo ErosEvent" />
         </Link>
 
@@ -18,9 +26,9 @@ function Header() {
               <Link href="/#eventos">Eventos</Link>
             </li>
 
-            <li>
+            <li onClick={clearLogin}>
               <Link href="/login" className="login">
-                Login
+                {`${admin ? "Sair" : "Login"}`}
               </Link>
             </li>
           </ul>

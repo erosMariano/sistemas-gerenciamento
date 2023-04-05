@@ -5,6 +5,8 @@ import { FormatDate } from "@/utils/formatDate";
 import { Poppins } from "next/font/google";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+
 import styled from "styled-components";
 const poppins = Poppins({
   subsets: ["latin"],
@@ -12,6 +14,7 @@ const poppins = Poppins({
 });
 
 function Admin() {
+  const [authChecked, setAuthChecked] = useState(false);
   const [events, setEvents] = useState<EventsModel[]>([
     {
       id: 0,
@@ -44,72 +47,87 @@ function Admin() {
     }
     getEvents();
   }, []);
+  const router = useRouter();
 
-  return (
-    <main className={poppins.className}>
-      <Head>
-        <title>erosEvents - Admin</title>
-        <meta
-          name="description"
-          content="Simplifique o gerenciamento de seus eventos com nosso aplicativo. Com recursos como programação, inscrições, pagamentos e comunicação, você pode criar eventos de sucesso com facilidade. Experimente agora e faça seu evento decolar!"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+  useEffect(() => {
+    const token = localStorage.getItem("@adminEros");
 
-      <Header />
-      <Main className={poppins.className}>
-        <form>
-          <h1>Cadastrar evento</h1>
-          <input type="text" placeholder="Digite o nome do evento" />
-          <input type="date" placeholder="Data do evento: 00/00/00" />
-          <input type="text" placeholder="Digite o local" />
-          <input type="text" placeholder="Digite o responsável" />
-          <input type="text" placeholder="Digite o valor do ingresso" />
-          <button>Entrar</button>
-        </form>
-      </Main>
+    if (typeof window !== "undefined" && token !== "valido") {
+      router.push("/login");
+    } else {
+      setAuthChecked(true);
+    }
+  }, [router]);
 
-      <Container className="container">
-        <h2>Meus eventos cadastrados</h2>
+  if (!authChecked) {
+    return null;
+  } else {
+    return (
+      <main className={poppins.className}>
+        <Head>
+          <title>erosEvents - Admin</title>
+          <meta
+            name="description"
+            content="Simplifique o gerenciamento de seus eventos com nosso aplicativo. Com recursos como programação, inscrições, pagamentos e comunicação, você pode criar eventos de sucesso com facilidade. Experimente agora e faça seu evento decolar!"
+          />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-        <Table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Banner</th>
-              <th>Nome do Evento</th>
-              <th>Data</th>
-              <th>Local</th>
-              <th>Adm do Evento</th>
-              <th>Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            {events.map((event) => {
-              const dataFormat = new Date(event.data);
-              return (
-                <>
-                  <tr>
-                    <td>
-                      <strong>{event.id}</strong>
-                    </td>
-                    <td className="banner">{event.banner}</td>
-                    <td>{event.nome_evento}</td>
-                    <td>{FormatDate(dataFormat)}</td>
-                    <td>{event.local}</td>
-                    <td>{event.admin_evento}</td>
-                    <td>R$ {event.valor}</td>
-                  </tr>
-                </>
-              );
-            })}
-          </tbody>
-        </Table>
-      </Container>
-      <Footer />
-    </main>
-  );
+        <Header admin={true} />
+        <Main className={poppins.className}>
+          <form>
+            <h1>Cadastrar evento</h1>
+            <input type="text" placeholder="Digite o nome do evento" />
+            <input type="date" placeholder="Data do evento: 00/00/00" />
+            <input type="text" placeholder="Digite o local" />
+            <input type="text" placeholder="Digite o responsável" />
+            <input type="text" placeholder="Digite o valor do ingresso" />
+            <button>Entrar</button>
+          </form>
+        </Main>
+
+        <Container className="container">
+          <h2>Meus eventos cadastrados</h2>
+
+          <Table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Banner</th>
+                <th>Nome do Evento</th>
+                <th>Data</th>
+                <th>Local</th>
+                <th>Adm do Evento</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {events.map((event) => {
+                const dataFormat = new Date(event.data);
+                return (
+                  <React.Fragment key={event.id}>
+                    <tr>
+                      <td>
+                        <strong>{event.id}</strong>
+                      </td>
+                      <td className="banner">{event.banner}</td>
+                      <td>{event.nome_evento}</td>
+                      <td>{FormatDate(dataFormat)}</td>
+                      <td>{event.local}</td>
+                      <td>{event.admin_evento}</td>
+                      <td>R$ {event.valor}</td>
+                    </tr>
+                  </React.Fragment>
+                );
+              })}
+            </tbody>
+          </Table>
+        </Container>
+        <Footer />
+      </main>
+    );
+  }
 }
 
 export default Admin;
