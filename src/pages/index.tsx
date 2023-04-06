@@ -7,8 +7,6 @@ import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
 import { EventsModel } from "@/types/models";
 
-
-
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "600", "700"],

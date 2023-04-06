@@ -13,16 +13,16 @@ function Hero() {
           <h2>Próximo evento de 2023</h2>
           <h1>O maior show de eletrônica do Brasil</h1>
           <p>
-            Este é o show de eletrônica que você não pode perder! Com uma mistura
-            envolvente de batidas eletrônicas, performances de tirar o fôlego e
-            efeitos especiais alucinantes, este evento será uma experiência
-            inesquecível para todos os amantes da música.
+            Este é o show de eletrônica que você não pode perder! Com uma
+            mistura envolvente de batidas eletrônicas, performances de tirar o
+            fôlego e efeitos especiais alucinantes, este evento será uma
+            experiência inesquecível para todos os amantes da música.
           </p>
 
           <div className="buttons">
-            <Link href="/" className="linkFill">
+            <a href="#eventos" className="linkFill">
               Garantir ingresso
-            </Link>
+            </a>
             <Link href="https://www.youtube.com/watch?v=-Q2VLQyFdNA&ab_channel=FunctionLAB">
               <Image src={IconPlay} width={24} height={24} alt="" />
               Assistir Teaser
@@ -46,7 +46,7 @@ export const Container = styled.div`
   display: flex;
   gap: 32px;
   justify-content: space-between;
-  align-items: center;  
+  align-items: center;
   justify-content: center;
   height: calc(100vh - 100px);
 `;
