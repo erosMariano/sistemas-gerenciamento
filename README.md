@@ -1,6 +1,6 @@
 <h1 align="center">
 
-<img src="" alt="Eros Event logo"/>
+<img src="./public/images/logo.svg" alt="Eros Event logo"/>
 
 </h1>
 
