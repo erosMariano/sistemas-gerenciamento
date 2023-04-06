@@ -9,10 +9,6 @@ interface EventosProps {
   listEvents: EventsModel[];
 }
 function Eventos({ listEvents }: EventosProps) {
-  {
-    console.log(listEvents);
-  }
-
   return (
     <EventosContainer className="container">
       <h2>Nossos eventos</h2>
