@@ -129,6 +129,10 @@ function Admin() {
         theme: "light",
         autoClose: 3000,
       });
+      
+      const updateEvents = events.filter((event) => event.id !== id)
+      setEvents(updateEvents)
+      
     } catch (error) {
       console.error(error);
       toast("Erro ao deletar evento", {
