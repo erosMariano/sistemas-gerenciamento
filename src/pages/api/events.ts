@@ -20,7 +20,6 @@ export default async function handler(
 
   if(req.method === "GET" && req.query.event){
     const id = req.query.event
-    console.log(req.query)
     eventos = await query({
       query: "SELECT * FROM eventos WHERE id = ?",
       values: [id],

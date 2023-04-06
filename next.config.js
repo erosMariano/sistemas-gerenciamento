@@ -10,9 +10,7 @@ const nextConfig = {
     ],
   },
   compiler: {
-    styledComponents: {
-      ssr: true,
-    },
+    styledComponents: true,
   },
 };
 
