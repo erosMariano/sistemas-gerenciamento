@@ -15,15 +15,22 @@ function CardEvents({
   nome_evento,
   quantidade_inscritos,
   valor,
-  id
+  id,
 }: EventsModel) {
   const dataFormat = new Date(data);
+  const regex = /\.(jpeg|jpg|gif|png)$/;
+  const isImage = regex.test(banner);
 
   return (
     <Card>
       <Link href={`/eventos/${id}`}>
         <>
-          <Image src={banner} width={361} height={200} alt="" />
+          <Image
+            src={isImage ? banner : Banner}
+            width={361}
+            height={200}
+            alt=""
+          />
           <div className="text">
             <h3>{nome_evento}</h3>
             <span className="dia">Data: {FormatDate(dataFormat)}</span>

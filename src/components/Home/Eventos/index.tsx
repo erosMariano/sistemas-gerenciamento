@@ -9,13 +9,16 @@ interface EventosProps {
   listEvents: EventsModel[];
 }
 function Eventos({ listEvents }: EventosProps) {
+  {
+    console.log(listEvents);
+  }
+
   return (
     <EventosContainer className="container">
       <h2>Nossos eventos</h2>
-
       <div className="containerEvents" id="eventos">
         {listEvents.length > 0 ? (
-          listEvents[0].banner !== "" ? (
+          listEvents[0].id !== 0 ? (
             listEvents.map((evento) => {
               return (
                 <CardEvents
@@ -72,14 +75,14 @@ export const EventosContainer = styled.section`
     font-size: 2rem;
   }
 
-  .semEventos{
+  .semEventos {
     color: #fb4b89;
     font-size: 2rem;
     text-align: center;
     background: #cecece;
     padding: 12px 50px;
     border-radius: 8px;
-    margin: 0 auto
+    margin: 0 auto;
   }
 `;
 
