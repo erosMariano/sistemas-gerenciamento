@@ -10,16 +10,17 @@ export default async function handler(
   let eventos;
   let message;
 
-  if (req.method === "GET" && !req.query.id) {
+  if (req.method === "GET" && !req.query.event) {
     eventos = await query({
       query: "SELECT * FROM eventos",
       values: [],
     });
     res.status(200).json(eventos);
   }
-  if(req.method === "GET" && req.query.id){
-    const { id } = req.query;
 
+  if(req.method === "GET" && req.query.event){
+    const id = req.query.event
+    console.log(req.query)
     eventos = await query({
       query: "SELECT * FROM eventos WHERE id = ?",
       values: [id],
@@ -78,13 +79,15 @@ export default async function handler(
       id,
     }: EventsModel = req.body;
 
+    const dataFormater = new Date(data)
+
     const updateEvent = await query({
       query:
         "UPDATE eventos SET banner = ?, nome_evento = ?, data = ?, local = ?, admin_evento = ?, quantidade_inscritos = ?, valor = ? WHERE id = ?",
       values: [
         banner,
         nome_evento,
-        data,
+        dataFormater,
         local,
         admin_evento,
         quantidade_inscritos,

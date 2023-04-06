@@ -28,28 +28,8 @@ function Admin() {
   }, [router]);
 
   const [authChecked, setAuthChecked] = useState(false);
-  const [createdEvent, setCreatedEvent] = useState<EventsModel>({
-    id: 0,
-    admin_evento: "",
-    banner: "",
-    data: "",
-    local: "",
-    nome_evento: "",
-    quantidade_inscritos: 0,
-    valor: 0,
-  });
-  const [events, setEvents] = useState<EventsModel[]>([
-    {
-      id: 0,
-      admin_evento: "",
-      banner: "",
-      data: "",
-      local: "",
-      nome_evento: "",
-      quantidade_inscritos: 0,
-      valor: 0,
-    },
-  ]);
+
+  const [events, setEvents] = useState<EventsModel[]>([]);
 
   const [newEvent, setNewEvent] = useState<EventsModel>({
     admin_evento: "",
@@ -70,20 +50,23 @@ function Admin() {
         },
       };
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/events`,
-        postData
-      );
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_URL}/api/events`,
+          postData
+        );
 
-      const data = await res.json();
-      setEvents(data);
+        const data = await res.json();
+        setEvents(data);
+      } catch (err) {
+        toast("Algum erro aconteceu", { theme: "dark" });
+      }
     }
     getEvents();
   }, []);
 
   async function createEvent(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     const postData = {
       method: "POST",
       headers: {
@@ -101,13 +84,13 @@ function Admin() {
 
     const dataResult = await res.json();
     if (dataResult.message !== "success") return;
-    setCreatedEvent(dataResult);
     toast("Evento criado!", {
       theme: "light",
       autoClose: 3000,
     });
 
     clearInputs();
+    setEvents((prevEvents) => [...prevEvents, newEvent]);
   }
 
   function clearInputs() {
@@ -122,35 +105,42 @@ function Admin() {
     });
   }
 
-  const [deleteItem, setDeleteItem] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   async function deleteEvent(id: number) {
-    setDeleteItem(true);
-    const postData = {
-      method: "DElETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id }),
-    };
+    setIsDeleting(true);
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/events/`,
-      postData
-    );
-    const data = await res.json();
-    if (data.response.message !== "success") return;
-    toast("Evento deletado!", {
-      theme: "light",
-      autoClose: 3000,
-    });
+    try {
+      const postData = {
+        method: "DElETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id }),
+      };
 
-    setDeleteItem(false);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_URL}/api/events/`,
+        postData
+      );
+      const data = await res.json();
+      if (data.response.message !== "success") return;
+      toast("Evento deletado!", {
+        theme: "light",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      console.error(error);
+      toast("Erro ao deletar evento", {
+        theme: "light",
+        autoClose: 3000,
+        type: "error",
+      });
+    }finally{
+      setIsDeleting(false);
+    }
   }
 
-  useEffect(() => {
-    console.log(deleteItem);
-  }, [deleteItem]);
   if (!authChecked) {
     return null;
   } else {
@@ -241,13 +231,13 @@ function Admin() {
               </tr>
             </thead>
             <tbody>
-              {events.map((event) => {
+              {events.map((event, index) => {
                 const dataFormat = new Date(event.data);
                 return (
                   <React.Fragment key={event.id}>
                     <tr>
                       <td>
-                        <strong>{event.id}</strong>
+                        <strong>{index + 1}</strong>
                       </td>
                       <td className="banner">{event.banner}</td>
                       <td>{event.nome_evento}</td>
@@ -257,7 +247,7 @@ function Admin() {
                       <td>R$ {event.valor}</td>
                       <td>
                         <button
-                          disabled={deleteItem}
+                          disabled={isDeleting}
                           onClick={() => deleteEvent(Number(event.id))}
                         >
                           Deletar

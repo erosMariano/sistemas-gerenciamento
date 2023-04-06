@@ -28,18 +28,6 @@ export default function Home() {
     },
   ]);
 
-  const [createdEvent, setCreatedEvent] = useState<EventsModel[]>([
-    {
-      id: 0,
-      admin_evento: "",
-      banner: "",
-      data: "",
-      local: "",
-      nome_evento: "",
-      quantidade_inscritos: 0,
-      valor: 0,
-    },
-  ]);
   useEffect(() => {
     async function getEvents() {
       const postData = {
@@ -60,31 +48,8 @@ export default function Home() {
     getEvents();
   }, []);
 
-  async function updateEvent(eventModify: EventsModel) {
-    const postData = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(eventModify),
-    };
-
-    // ====== CRIAR VALIDAÇÕES
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/events`,
-      postData
-    );
-
-    const dataResult = await res.json();
-    if (dataResult.response.message !== "success") return;
-    setCreatedEvent(dataResult);
-  }
-
-
   return (
     <>
-    
       <Head>
         <title>erosEvents</title>
         <meta

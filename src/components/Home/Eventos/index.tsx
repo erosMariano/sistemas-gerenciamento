@@ -14,22 +14,24 @@ function Eventos({ listEvents }: EventosProps) {
       <h2>Nossos eventos</h2>
 
       <div className="containerEvents" id="eventos">
-        {listEvents[0].id !== 0 ? (
-          listEvents.map((evento) => (
-            <CardEvents
-              admin_evento={evento.admin_evento}
-              banner={evento.banner}
-              data={evento.data}
-              local={evento.local}
-              nome_evento={evento.nome_evento}
-              quantidade_inscritos={evento.quantidade_inscritos}
-              valor={evento.valor}
-              id={evento.id}
-              key={evento.id}
-            />
-          ))
+        {listEvents.length && listEvents[0].banner !== "" ? (
+          listEvents.map((evento) => {
+            return (
+              <CardEvents
+                admin_evento={evento.admin_evento}
+                banner={evento.banner}
+                data={evento.data}
+                local={evento.local}
+                nome_evento={evento.nome_evento}
+                quantidade_inscritos={evento.quantidade_inscritos}
+                valor={evento.valor}
+                id={evento.id}
+                key={evento.id}
+              />
+            );
+          })
         ) : (
-          <BoxCardsSkelleton>
+          <BoxCardsSkeleton>
             <Card>
               <Skeleton count={1} height={413} width={361} />
             </Card>
@@ -40,7 +42,7 @@ function Eventos({ listEvents }: EventosProps) {
             <Card>
               <Skeleton count={1} height={413} width={361} />
             </Card>
-          </BoxCardsSkelleton>
+          </BoxCardsSkeleton>
         )}
       </div>
     </EventosContainer>
@@ -67,7 +69,7 @@ export const EventosContainer = styled.section`
   }
 `;
 
-export const BoxCardsSkelleton = styled.div`
+export const BoxCardsSkeleton = styled.div`
   display: flex;
   justify-content: space-between;
   height: 400px;
